@@ -3,12 +3,9 @@ import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import { BASE_URL, SECRET } from "../global";
 import fs from "fs";
-import md5 from "md5"; //ENKRIPSI PASSWORD
-import { sign } from "jsonwebtoken"; //MEMBUAT TOKEN
+import md5 from "md5";
+import { sign } from "jsonwebtoken";
 import { request } from "http";
-import { json } from "stream/consumers";
-import { number } from "joi";
-import { profile } from "console";
 
 const prisma = new PrismaClient({ errorFormat: "pretty" });
 
@@ -29,32 +26,56 @@ export const getAllUser = async (request: Request, response: Response) => {
     return response
       .json({
         status: false,
-        message: `There is an error. ${error}`,
+        message: `User is an error. ${error}`,
       })
       .status(400);
   }
 };
+
 export const createUser = async (request: Request, response: Response) => {
   try {
-    const { name, email, password, role } = request.body;
+    const {
+      name,
+      email,
+      password,
+      gender,
+      dateBirth,
+      phoneNumber,
+      postalCode,
+      alamat,
+      profil_picture,
+      role,
+    } = request.body;
     const uuid = uuidv4();
 
     const newUser = await prisma.user.create({
-      data: { uuid, name, email, password, role },
+      data: {
+        uuid,
+        name,
+        email,
+        password: md5(password),
+        gender,
+        dateBirth,
+        phoneNumber,
+        postalCode,
+        alamat,
+        profil_picture,
+        role,
+      },
     });
 
     return response
       .json({
         status: true,
         data: newUser,
-        message: `New User Has Created`,
+        message: `New User has Created`,
       })
       .status(200);
   } catch (error) {
     return response
       .json({
         status: false,
-        message: `There os an error.${error}`,
+        messasge: `There is an error.${error}`,
       })
       .status(400);
   }
@@ -63,23 +84,46 @@ export const createUser = async (request: Request, response: Response) => {
 export const updatedUser = async (request: Request, response: Response) => {
   try {
     const { id } = request.params;
-    const { name, email, password, role } = request.body;
-    const updateUser = await prisma.user.update({
-      where: { id: Number(id) },
-      data: { name, email, password, role },
+    const {
+      name,
+      email,
+      password,
+      gender,
+      dateBirth,
+      phoneNumber,
+      postalCode,
+      alamat,
+      profil_picture,
+      role,
+    } = request.body;
+    const updatedUser = await prisma.user.update({
+      where: { idUser: Number(id) },
+      data: {
+        name,
+        email,
+        password,
+        gender,
+        dateBirth,
+        phoneNumber,
+        postalCode,
+        alamat,
+        profil_picture,
+        role,
+      },
     });
 
     return response
       .json({
         status: true,
-        data: updateUser,
-        message: "User has updates succesfully",
+        data: updatedUser,
+        message: " User Has Update Successfully",
       })
       .status(200);
   } catch (error) {
-    return response
-      .json({ status: false, message: `There is an error. ${error}` })
-      .json(400);
+    return response.json({
+      status: false,
+      message: `There is an error. ${error}`,
+    });
   }
 };
 
@@ -87,31 +131,33 @@ export const deleteAllUser = async (request: Request, response: Response) => {
   try {
     const { id } = request.params;
     const deleteAllUser = await prisma.user.delete({
-      where: { id: Number(id) },
+      where: { idUser: Number(id) },
     });
-
     return response
       .json({
         status: true,
         data: deleteAllUser,
-        message: "User has deleted successfully",
+        message: "User has deleted succesfully",
       })
       .status(200);
   } catch (error) {
     return response
-      .json({ status: false, message: `There is an error. ${error}` })
+      .json({
+        status: false,
+        message: `There is an error. ${error}`,
+      })
       .status(400);
   }
 };
 
 export const profileUser = async (request: Request, response: Response) => {
   try {
-    const { id} = request.params;
+    const { id } = request.params;
     const findUser = await prisma.user.findFirst({
-      where: { id: Number(id) },
+      where: { idUser: Number(id) },
     });
     if (!findUser) {
-      return response.json({ status: false, message: "User not found" });
+      return response.json({ status: false, message: "User Not Found" });
     }
 
     let filename = findUser.profil_picture;
@@ -126,7 +172,7 @@ export const profileUser = async (request: Request, response: Response) => {
     }
 
     const updateUser = await prisma.user.update({
-      where: { id: Number(id) },
+      where: { idUser: Number(id) },
       data: {
         profil_picture: filename,
       },
@@ -136,20 +182,20 @@ export const profileUser = async (request: Request, response: Response) => {
       .json({
         status: true,
         data: updateUser,
-        message: "User has retrivied successfully",
+        message: "User has Retrivied Successfully",
       })
       .status(200);
   } catch (error) {
-    return response
-      .json({ status: false, message: `There is an error.${error}` })
-      .status(400);
+    return response.json({
+      status: false,
+      message: `There is an error. ${error}`,
+    });
   }
 };
 
 export const authentication = async (request: Request, response: Response) => {
   try {
     const { email, password } = request.body;
-
     const findUser = await prisma.user.findFirst({
       where: { email, password: md5(password) },
     });
@@ -158,31 +204,38 @@ export const authentication = async (request: Request, response: Response) => {
       return response.status(200).json({
         status: false,
         logget: false,
-        message: `Invalid email or password`,
+        message: `Invalid Email or Password`,
       });
 
     let data = {
-      id: findUser.id,
+      id: findUser.idUser,
       name: findUser.name,
       email: findUser.email,
+      gender: findUser.gender,
+      dateBirth: findUser.dateBirth, // Diberikan sebagai integer
+      phoneNumber: findUser.phoneNumber,
+      postalCode: findUser.postalCode,
+      alamat: findUser.alamat,
       role: findUser.role,
     };
 
     let payLoad = JSON.stringify(data);
     let token = sign(payLoad, SECRET || "token");
-    // const token = sign(payLoad, SECRET || "token");
 
     return response
       .json({
         status: true,
         logged: true,
-        // data: { ...findUser, token },
-        message: `User has logged in successfully`,
+        message: `User has Logged in Successfully`,
+        token,
       })
       .status(200);
   } catch (error) {
     return response
-      .json({ status: false, message: `There is an error. ${error}` })
+      .json({
+        status: false,
+        message: `There is an error. ${error}`,
+      })
       .status(400);
   }
 };

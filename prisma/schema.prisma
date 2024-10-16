@@ -13,78 +13,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Gender {
+  MAN
+  WOMAN
+}
+
 enum Role {
-  MANAGER
-  CASHIER
+  CUSTOMER
+  ADMIN
 }
 
-enum Category {
-  FOOD
-  DRINK
-  SNACK
+model produk {
+  id              Int               @id @default(autoincrement())
+  uuid            String            @default("")
+  namaProduk      String            @default("")
+  Keterangan      String            @default("")
+  tarif           Int               @default(0)
+  picture         String            @default("")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  detailTransaksi detailTransaksi[]
 }
 
-enum Payment {
-  CASH
-  QRIS
+model transaksi {
+  idTransaksi     Int               @id @default(autoincrement())
+  stock           Int               @default(0)
+  tglTransaksi    DateTime?
+  tglBayar        DateTime?
+  tglAkhir        DateTime?
+  tglMulai        DateTime?
+  statusBayar     String            @default("")
+  totalBayar      Int               @default(0)
+  idPelaggan      Int
+  createAt        DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  detailTransaksi detailTransaksi[]
+  pelanggan       User              @relation(fields: [idPelaggan], references: [idUser])
 }
 
-enum Status {
-  NEW
-  PAID
-  DONE
+model detailTransaksi {
+  id_detail_transaksi Int       @id @default(autoincrement())
+  jumlahProduk        Int       @default(0)
+  harga               Int       @default(0)
+  idProduk            Int       @default(0)
+  idTrasnsaksi        Int       @default(0)
+  createAt            DateTime  @default(now())
+  updateAt            DateTime  @updatedAt
+  produk              produk    @relation(fields: [idProduk], references: [id])
+  transaksi           transaksi @relation(fields: [idTrasnsaksi], references: [idTransaksi])
 }
 
-model menu {
-  id          Int         @id @default(autoincrement())
-  uuid        String      @default("")
-  name        String      @default("")
-  price       Int         @default(0)
-  category    Category    @default(FOOD)
-  picture     String      @default("")
-  description String      @default("") @db.Text
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  orderLists  OrderList[]
-}
-
-model user {
-  id             Int      @id @default(autoincrement())
-  uuid           String   @default("")
-  name           String   @default("")
-  email          String   @unique @default("")
-  password       String   @default("")
-  profil_picture String   @default("")
-  role           Role     @default(CASHIER)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  orderDetail    Order[]
-}
-
-model Order {
-  id             Int         @id @default(autoincrement())
-  uuid           String      @unique @default("")
-  customer       String      @default("")
-  table_number   String      @default("")
-  total_price    Int         @default(0)
-  payment_method Payment     @default(CASH)
-  status         Status      @default(NEW)
+model User {
+  idUser         Int         @id @default(autoincrement())
+  uuid           String      @default("")
+  name           String      @default("")
+  gender         Gender      @default(MAN)
+  dateBirth      DateTime    @default(now())
+  phoneNumber    String      @default("")
+  postalCode     String      @default("")
+  alamat         String      @default("")
+  email          String      @unique @default("")
+  password       String      @default("")
+  profil_picture String      @default("")
+  role           Role        @default(CUSTOMER)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
-  orderLists     OrderList[]
-  User           user?       @relation(fields: [userid], references: [id])
-  userid         Int?
-}
-
-model OrderList {
-  id        Int      @id @default(autoincrement())
-  uuid      String   @unique @default("")
-  quantity  Int      @default(0)
-  note      String   @default("") @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Menu      menu?    @relation(fields: [MenuId], references: [id])
-  MenuId    Int?
-  Order     Order?   @relation(fields: [OrderId], references: [id])
-  OrderId   Int?
+  transaksi      transaksi[]
 }

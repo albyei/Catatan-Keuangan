@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     //define location pf upload picture, make sure that ypu have crate a " public" folder in root folder
     //then create folder "menu_picture" inside pf "public folder"
 
-    cb(null, `${BASE_URL}/public/profile_picture/`);
+    cb(null, `${BASE_URL}/public/produk_picture/`);
   },
   filename: (
     request: Request,
