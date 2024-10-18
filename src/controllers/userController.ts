@@ -153,6 +153,7 @@ export const deleteAllUser = async (request: Request, response: Response) => {
 export const profileUser = async (request: Request, response: Response) => {
   try {
     const { id } = request.params;
+    const { id } = request.params;
     const findUser = await prisma.user.findFirst({
       where: { idUser: Number(id) },
     });

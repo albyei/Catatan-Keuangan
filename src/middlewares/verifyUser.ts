@@ -15,7 +15,7 @@ const addDataSchema = Joi.object({
   postalCode: Joi.string().required(),
   alamat: Joi.string().required(),
   profile_picture: Joi.allow().optional(),
-  role: Joi.string().valid(`CUSTOMER`, `ADMIN`).required(),
+  
 });
 
 const addEditSchema = Joi.object({
