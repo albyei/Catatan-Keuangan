@@ -1,29 +1,23 @@
 import { NextFunction, Request, Response } from "express";
-import Joi, { string } from "joi";
+import Joi from "joi";
+import { request } from "node:http";
+import { describe } from "node:test";
+
+/** create schema for detail of orderlist */
 
 const addDataSchema = Joi.object({
-  name: Joi.string().required(),
-
-  price: Joi.number().min(0).required(),
-  category: Joi.string().valid('FOOD','DRINK','SNACK').required(),
+  type: Joi.string().valid("INCOME", "EXPENSE").required(),
+  amount: Joi.number().min(0).required(),
   description: Joi.string().required(),
-  picture: Joi.allow().optional(), //allow = diperbolehkan
-  user: Joi.optional()
 });
 
 const addEditSchema = Joi.object({
-  name: Joi.string().optional(),
-  price: Joi.number().min(0).optional(),
-  category: Joi.string().valid('FOOD','DRINK','SNACK').optional(),
+  type: Joi.string().valid("INCOME", "EXPENSE").optional(),
+  amount: Joi.number().min(0).optional(),
   description: Joi.string().optional(),
-  picture: Joi.allow().optional(), //allow = diperbolehkan
-  user: Joi.optional()
 });
 
-
-
-
-export const verifyAddMenu = (
+export const verifyAddCatatan = (
   request: Request,
   response: Response,
   next: NextFunction
@@ -39,13 +33,12 @@ export const verifyAddMenu = (
   return next();
 };
 
-export const verifyEditMenu = (
+export const verifyEditCatatan = (
   request: Request,
   response: Response,
   next: NextFunction
 ) => {
   const { error } = addEditSchema.validate(request.body, { abortEarly: false });
-
   if (error) {
     return response.status(400).json({
       status: false,
@@ -54,5 +47,3 @@ export const verifyEditMenu = (
   }
   return next();
 };
-
-

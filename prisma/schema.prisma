@@ -13,70 +13,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Gender {
-  MAN
-  WOMAN
+enum Type {
+  INCOME
+  EXPENSE
 }
 
-enum Role {
-  CUSTOMER
-  ADMIN
-}
-
-model produk {
+model Catatan {
   id              Int               @id @default(autoincrement())
-  uuid            String            @default("")
-  namaProduk      String            @default("")
-  Keterangan      String            @default("")
-  tarif           Int               @default(0)
-  picture         String            @default("")
+  type            Type              @default(EXPENSE)
+  amount          Float             @default(0)
+  description     String            @default("")
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  detailTransaksi detailTransaksi[]
-}
-
-model transaksi {
-  idTransaksi     Int               @id @default(autoincrement())
-  stock           Int               @default(0)
-  tglTransaksi    DateTime?
-  tglBayar        DateTime?
-  tglAkhir        DateTime?
-  tglMulai        DateTime?
-  statusBayar     String            @default("")
-  totalBayar      Int               @default(0)
-  idPelaggan      Int
-  createAt        DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  detailTransaksi detailTransaksi[]
-  pelanggan       User              @relation(fields: [idPelaggan], references: [idUser])
-}
-
-model detailTransaksi {
-  id_detail_transaksi Int       @id @default(autoincrement())
-  jumlahProduk        Int       @default(0)
-  harga               Int       @default(0)
-  idProduk            Int       @default(0)
-  idTrasnsaksi        Int       @default(0)
-  createAt            DateTime  @default(now())
-  updateAt            DateTime  @updatedAt
-  produk              produk    @relation(fields: [idProduk], references: [id])
-  transaksi           transaksi @relation(fields: [idTrasnsaksi], references: [idTransaksi])
-}
-
-model User {
-  idUser         Int         @id @default(autoincrement())
-  uuid           String      @default("")
-  name           String      @default("")
-  gender         Gender      @default(MAN)
-  dateBirth      DateTime    @default(now())
-  phoneNumber    String      @default("")
-  postalCode     String      @default("")
-  alamat         String      @default("")
-  email          String      @unique @default("")
-  password       String      @default("")
-  profil_picture String      @default("")
-  role           Role        @default(CUSTOMER)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  transaksi      transaksi[]
 }
