@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `produk` ADD COLUMN `uuid` VARCHAR(191) NOT NULL DEFAULT '';
