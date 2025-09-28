@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catatan Keuangan</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Catatan Keuangan</h1>
+
+      <!-- Link untuk menambah catatan -->
+      <a href="/catatan/add" class="btn btn-add">Tambah Catatan</a>
+
+      <!-- Tabel Catatan -->
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipe</th>
+            <th>Jumlah</th>
+            <th>Deskripsi</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% catatan.forEach(item => { %>
+          <tr>
+            <td><%= item.id %></td>
+            <td><%= item.type %></td>
+            <td>Rp <%= item.amount.toLocaleString() %></td>
+            <td><%= item.description %></td>
+            <td>
+              <a href="/catatan/edit/<%= item.id %>" class="btn btn-edit"
+                >Edit</a
+              >
+              <form
+                action="/catatan/<%= item.id %>?_method=DELETE"
+                method="POST"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-delete"
+                  onclick="return confirm('Yakin ingin menghapus?')"
+                >
+                  Hapus
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <!-- Total INCOME dan EXPENSE -->
+      <div class="total">
+        <h3>Total INCOME: Rp <%= totalIncome.toLocaleString() %></h3>
+        <h3>Total EXPENSE: Rp <%= totalExpense.toLocaleString() %></h3>
+      </div>
+    </div>
+  </body>
+</html>
