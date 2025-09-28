@@ -34,6 +34,7 @@
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "cors": "^2.8.5",
+    "ejs": "^3.1.10",
     "express": "^4.21.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
@@ -43,6 +44,7 @@
     "nodemon": "^3.1.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "tsc": "^2.0.4",
     "uuid": "^10.0.0"
   },
   "private": true
