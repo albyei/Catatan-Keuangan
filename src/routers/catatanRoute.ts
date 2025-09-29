@@ -49,7 +49,7 @@ import {
   renderEditCatatan,
 } from "../controllers/catatanController";
 import { verifyAddCatatan, verifyEditCatatan } from "../middlewares/verifyCatatan";
-import { setupSwagger } from "../../src/swagger";
+import { setupSwagger } from "../swagger";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import methodOverride from "method-override";
