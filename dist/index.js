@@ -19,7 +19,7 @@
 
 import express from "express";
 import cors from "cors";
-import catatanRoute from "./routers/catatanRoute";
+import catatanRoute from "../src/routers/catatanRoute";
 import { setupSwagger } from "./swagger";
 import { PORT } from "./global";
 import path from "path";

@@ -49,7 +49,7 @@ import {
   renderEditCatatan,
 } from "../controllers/catatanController";
 import { verifyAddCatatan, verifyEditCatatan } from "../middlewares/verifyCatatan";
-import { setupSwagger } from "../../src/swagger";
+// import { setupSwagger } from "../../src/swagger";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import methodOverride from "method-override";
@@ -69,7 +69,7 @@ const app = express();
 app.use(express.json());
 app.use(methodOverride("_method")); // Untuk mendukung PUT dan DELETE dari form
 
-setupSwagger(app);
+// setupSwagger(app);
 
 app.get(`/`, getAllCatatan);
 app.get(`/add`, renderAddCatatan); // Route untuk form tambah
